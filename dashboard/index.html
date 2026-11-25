@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meridian · Pre-Token Launch Atlas</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="../data.js"></script>
+  <script defer src="atlas.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="sigil">◈</span>
+      <strong>MERIDIAN</strong>
+      <span class="sub-brand">PRE-TOKEN LAUNCH ATLAS</span>
+    </div>
+    <div class="meta-pill">
+      <span class="dot"></span>
+      <span>SEALED SNAPSHOT</span>
+      <b id="as-of">—</b>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="kicker">OBSERVATORY / 01 · BAYESIAN VALUATION MODEL</div>
+        <h1>Map the <em>unissued</em> protocols.</h1>
+        <p>Every pre-token protocol in the sealed DefiLlama snapshot, ranked by Bayesian-shrunk peer multiples, 7-day TVL momentum, operating age, and chain breadth—paired with concrete, chain-aware farming plans.</p>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><span class="kpi-lbl">PRE-TOKEN RADAR</span><strong id="kpi-pre">—</strong><small>ranked protocols</small></div>
+        <div class="kpi gold"><span class="kpi-lbl">HOUSE WATCHLIST</span><strong id="kpi-watch">—</strong><small>100% covered</small></div>
+        <div class="kpi"><span class="kpi-lbl">TRACKED TVL</span><strong id="kpi-tvl">—</strong><small>in current view</small></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title">
+          <h2>Opportunity Ledger <span id="result-count"></span></h2>
+          <span class="hint">Click any row or scatter dot to inspect valuation waterfall &amp; farm plan</span>
+        </div>
+        <div class="seg-tabs" role="group" aria-label="Token status">
+          <button data-tab="pre" class="active">No Recorded Token</button>
+          <button data-tab="live">Live Token Reference</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input id="f-search" type="search" placeholder="Search protocol, category, or chain…" aria-label="Search protocols" />
+        <select id="f-watch" aria-label="Filter watchlist">
+          <option value="">All Pre-Token</option>
+          <option value="watch">Watchlist Only (40)</option>
+        </select>
+        <select id="f-cat" aria-label="Filter category"><option value="">All Categories</option></select>
+        <select id="f-chain" aria-label="Filter chain"><option value="">All Chains</option></select>
+        <select id="f-tvl" aria-label="Filter TVL">
+          <option value="">Any TVL</option>
+          <option value="sm">$5M – $50M</option>
+          <option value="md">$50M – $1B</option>
+          <option value="lg">$1B+</option>
+        </select>
+        <select id="f-growth" aria-label="Filter 7d growth">
+          <option value="">Any 7d Trend</option>
+          <option value="up">Growing (&gt;0%)</option>
+          <option value="down">Declining (&lt;0%)</option>
+        </select>
+        <button id="f-reset" class="btn-ghost">Reset</button>
+      </div>
+
+      <div class="scatter-wrap">
+        <div class="scatter-head">
+          <span>TVL VS. IMPLIED VALUE (LOG SCALE)</span>
+          <span><i class="swatch gold"></i> Watchlist &nbsp; <i class="swatch teal"></i> Early Radar &nbsp; <i class="swatch white"></i> Selected</span>
+        </div>
+        <div id="scatter"></div>
+      </div>
+
+      <div class="split">
+        <div class="ledger-wrap">
+          <div class="ledger-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th><button data-sort="rank">RANK</button></th>
+                  <th><button data-sort="name">PROTOCOL</button></th>
+                  <th class="num"><button data-sort="tvl_usd">TVL</button></th>
+                  <th class="num"><button data-sort="change_7d">7D</button></th>
+                  <th class="num"><button data-sort="implied_value_usd">IMPLIED VALUE</button></th>
+                  <th>SIGNAL</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+            <div id="empty-msg" hidden>No protocols match these filters. Click Reset to restore the board.</div>
+          </div>
+          <div class="ledger-foot">
+            <span id="foot-summary"></span>
+            <span class="keys"><kbd>↑</kbd>/<kbd>↓</kbd> navigate · <kbd>/</kbd> search · <kbd>Esc</kbd> clear</span>
+          </div>
+        </div>
+
+        <aside id="drawer" class="drawer" aria-label="Protocol detail drawer"></aside>
+      </div>
+    </section>
+
+    <section class="methodology">
+      <div>
+        <div class="kicker">TRANSPARENT MODEL / ZERO HARDCODED RANKS</div>
+        <h3>How Meridian derives implied value</h3>
+        <p>Every rank is computed directly from the sealed snapshot: <code>TVL × Shrunk Multiple × Momentum × Maturity × Breadth</code>. Scenarios in the detail drawer never alter the ranked board.</p>
+      </div>
+      <div class="method-cards">
+        <div><b>01 · Shrunk Peer Multiple</b><p>Clamped peer Mcap/TVL (0.05×–12×) shrunk toward the global median with a 3-peer Bayesian prior so thin 1-peer categories never distort ranks.</p></div>
+        <div><b>02 · 7d TVL Momentum</b><p><code>1 + clamp(change_7d, -50%, +50%) × 0.50 / 100</code>. Missing 7d change defaults neutrally to 0%.</p></div>
+        <div><b>03 · Operating Maturity</b><p><code>0.75 + 0.25 × min(age_days, 730) / 730</code>. Rewards battle-tested protocols running without a token.</p></div>
+        <div><b>04 · Multi-Chain Breadth</b><p><code>1 + 0.05 × min(chains - 1, 4)</code>. Modest premium for multi-network liquidity distribution.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span>◈ MERIDIAN · PRE-TOKEN LAUNCH ATLAS</span>
+    <span>OFFLINE SNAPSHOT RENDER · NO LIVE NETWORK CALLS</span>
+  </footer>
+</body>
+</html>
